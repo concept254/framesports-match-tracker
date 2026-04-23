@@ -1,0 +1,96 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1><%= @match.title %></h1>
+      <p class="meta">
+        <%= @match.home_team %> vs <%= @match.away_team %> &nbsp;·&nbsp;
+        <%= @match.played_on&.strftime('%d %b %Y') %> &nbsp;·&nbsp;
+        📍 <%= @match.venue.presence || 'Venue TBC' %>
+      </p>
+    </div>
+    <div class="header-actions">
+      <%= link_to 'Edit', edit_match_path(@match), class: 'btn btn-ghost' %>
+      <%= link_to '← All Matches', matches_path, class: 'btn btn-ghost' %>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><span><%= @match_events.count %></span><label>Total Events</label></div>
+    <div class="stat-card"><span><%= @match.try_count('home') %></span><label><%= @match.home_team %> Tries</label></div>
+    <div class="stat-card"><span><%= @match.try_count('away') %></span><label><%= @match.away_team %> Tries</label></div>
+    <div class="stat-card highlight-card"><span>★ <%= @highlights.count %></span><label>Highlights</label></div>
+  </div>
+
+  <% if @highlights.any? %>
+    <div class="highlights-reel">
+      <h2>🎬 Highlight Reel</h2>
+      <div class="highlights-list">
+        <% @highlights.each do |h| %>
+          <div class="highlight-chip">
+            <span class="hl-time"><%= h.timestamp_formatted %></span>
+            <span class="hl-type"><%= h.event_type %></span>
+            <% if h.player_name.present? %><span class="hl-player"><%= h.player_name %></span><% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="two-col">
+    <div>
+      <h2>Match Timeline</h2>
+      <% if @match_events.empty? %>
+        <p class="empty-state">No events yet — log one on the right.</p>
+      <% else %>
+        <div class="timeline">
+          <% @match_events.each do |event| %>
+            <div class="timeline-row <%= event.highlight ? 'is-highlight' : '' %>">
+              <span class="tl-time"><%= event.timestamp_formatted %></span>
+              <span class="tl-badge event-<%= event.event_type.downcase.gsub(' ', '-') %>"><%= event.event_type %></span>
+              <span class="tl-side side-<%= event.team_side %>"><%= event.team_side&.upcase %></span>
+              <span class="tl-player"><%= event.player_name.presence || '—' %></span>
+              <% if event.highlight %><span class="tl-hl">★</span><% end %>
+              <% if event.notes.present? %><span class="tl-notes"><%= event.notes %></span><% end %>
+              <%= link_to '✕', match_match_event_path(@match, event),
+                    data: { turbo_method: :delete, turbo_confirm: 'Remove event?' },
+                    class: 'tl-remove' %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="log-panel">
+      <h2>Log Event</h2>
+      <%= form_with model: [@match, @match_event], class: 'event-form' do |f| %>
+        <div class="form-group">
+          <%= f.label :event_type, 'Event Type' %>
+          <%= f.select :event_type, @event_types, { prompt: 'Select...' } %>
+        </div>
+        <div class="form-group">
+          <%= f.label :team_side, 'Team' %>
+          <%= f.select :team_side,
+                [[@match.home_team, 'home'], [@match.away_team, 'away']],
+                { prompt: 'Select team...' } %>
+        </div>
+        <div class="form-group">
+          <%= f.label :player_name, 'Player Name (optional)' %>
+          <%= f.text_field :player_name, placeholder: 'e.g. Siya Kolisi' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :timestamp_seconds, 'Match Time (seconds)' %>
+          <%= f.number_field :timestamp_seconds, placeholder: 'e.g. 300 = 05:00', min: 0 %>
+        </div>
+        <div class="form-group checkbox-row">
+          <%= f.check_box :highlight %>
+          <%= f.label :highlight, '★ Tag as Highlight' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :notes, 'Notes (optional)' %>
+          <%= f.text_area :notes, rows: 2, placeholder: 'Brief description...' %>
+        </div>
+        <%= f.submit 'Log Event', class: 'btn btn-primary full-width' %>
+      <% end %>
+    </div>
+  </div>
+</div>

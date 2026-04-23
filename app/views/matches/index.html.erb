@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1>Match Library</h1>
+      <p class="subtitle"><%= @matches.count %> match<%= @matches.count == 1 ? '' : 'es' %> tracked</p>
+    </div>
+  </div>
+
+  <% if @matches.empty? %>
+    <div class="empty-state">
+      <p>No matches yet.</p>
+      <%= link_to 'Create your first match →', new_match_path, class: 'btn btn-primary' %>
+    </div>
+  <% else %>
+    <div class="match-grid">
+      <% @matches.each do |match| %>
+        <div class="match-card">
+          <div class="match-card-top">
+            <h2><%= match.title %></h2>
+            <span class="match-date"><%= match.played_on&.strftime('%d %b %Y') %></span>
+          </div>
+          <p class="match-teams"><%= match.home_team %> <span>vs</span> <%= match.away_team %></p>
+          <p class="match-venue">📍 <%= match.venue.presence || 'Venue TBC' %></p>
+          <div class="match-meta-row">
+            <span class="badge"><%= match.match_events.count %> events</span>
+            <span class="badge badge-highlight">★ <%= match.highlights.count %> highlights</span>
+          </div>
+          <div class="card-actions">
+            <%= link_to 'View Match', match, class: 'btn btn-primary' %>
+            <%= link_to 'Edit', edit_match_path(match), class: 'btn btn-ghost' %>
+            <%= link_to 'Delete', match,
+                  data: { turbo_method: :delete, turbo_confirm: 'Delete this match?' },
+                  class: 'btn btn-danger' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

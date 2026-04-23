@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Framesports Match Tracker</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="/" class="nav-brand">🏉 Framesports</a>
+      <%= link_to 'All Matches', matches_path, class: 'nav-link' %>
+      <%= link_to '+ New Match', new_match_path, class: 'nav-cta' %>
+    </nav>
+
+    <% if notice %>
+      <div class="flash flash-notice"><%= notice %></div>
+    <% end %>
+    <% if alert %>
+      <div class="flash flash-alert"><%= alert %></div>
+    <% end %>
+
+    <%= yield %>
+  </body>
+</html>

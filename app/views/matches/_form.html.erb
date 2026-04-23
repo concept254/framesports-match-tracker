@@ -1,0 +1,38 @@
+<%= form_with model: match, class: 'form-card' do |f| %>
+  <% if match.errors.any? %>
+    <div class="error-box">
+      <% match.errors.full_messages.each do |msg| %>
+        <p>⚠ <%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :title, 'Match Title' %>
+    <%= f.text_field :title, placeholder: 'e.g. Lions vs Sharks — Round 5' %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :home_team, 'Home Team' %>
+      <%= f.text_field :home_team, placeholder: 'e.g. Lions' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :away_team, 'Away Team' %>
+      <%= f.text_field :away_team, placeholder: 'e.g. Sharks' %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :played_on, 'Match Date' %>
+      <%= f.date_field :played_on %>
+    </div>
+    <div class="form-group">
+      <%= f.label :venue, 'Venue' %>
+      <%= f.text_field :venue, placeholder: 'e.g. Ellis Park' %>
+    </div>
+  </div>
+
+  <%= f.submit 'Save Match', class: 'btn btn-primary' %>
+<% end %>

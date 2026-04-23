@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  match: one
+  event_type: MyString
+  player_name: MyString
+  team_side: MyString
+  timestamp_seconds: 1
+  highlight: false
+  notes: MyText
+
+two:
+  match: two
+  event_type: MyString
+  player_name: MyString
+  team_side: MyString
+  timestamp_seconds: 1
+  highlight: false
+  notes: MyText
